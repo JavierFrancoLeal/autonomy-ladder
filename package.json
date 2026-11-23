@@ -1,0 +1,33 @@
+{
+  "name": "@franco/autonomy-ladder",
+  "version": "1.0.0",
+  "description": "Evidence-based Traffic-Light Autonomy Grader (Green/Flag/Yellow/Red) for AI agents: deterministic log parser, A/B/C/D trust scoring, CLI, stdio MCP server, and CI regression gate.",
+  "type": "module",
+  "main": "./src/core.mjs",
+  "bin": {
+    "autonomy-ladder": "./src/cli.mjs",
+    "autonomy-ladder-mcp": "./src/mcp-server.mjs"
+  },
+  "scripts": {
+    "test": "node --test test/autonomy-ladder.test.mjs"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "ai-agents",
+    "agent-governance",
+    "autonomy-ladder",
+    "human-in-the-loop",
+    "mcp-server",
+    "trust-scoring",
+    "evals"
+  ],
+  "author": "Javier Franco <https://github.com/JavierFrancoLeal>",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JavierFrancoLeal/autonomy-ladder.git"
+  },
+  "homepage": "https://github.com/JavierFrancoLeal/autonomy-ladder"
+}
