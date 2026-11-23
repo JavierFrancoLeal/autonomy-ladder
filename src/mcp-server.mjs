@@ -69,6 +69,9 @@ function send(msg) {
 }
 
 function handleRequest(req) {
+  if (!req || typeof req !== "object" || Array.isArray(req)) {
+    return send({ jsonrpc: "2.0", id: null, error: { code: -32600, message: "Invalid Request" } });
+  }
   const { id, method, params } = req;
   if (method === "initialize") {
     return send({
@@ -77,7 +80,7 @@ function handleRequest(req) {
       result: {
         protocolVersion: "2024-11-05",
         capabilities: { tools: {} },
-        serverInfo: { name: "autonomy-ladder", version: "1.0.0" },
+        serverInfo: { name: "autonomy-ladder", version: "1.0.2" },
       },
     });
   }

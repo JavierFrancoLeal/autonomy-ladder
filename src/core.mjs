@@ -79,18 +79,26 @@ export function parseSupervisionLog(rawText) {
   return events;
 }
 
+function parseBoolFlag(val) {
+  if (typeof val === "boolean") return val;
+  if (typeof val === "string") {
+    return /^(true|yes|1)$/i.test(val.trim());
+  }
+  return Boolean(val);
+}
+
 export function normalizeEvent(obj) {
   const pattern = String(obj.pattern || "").trim();
-  const rawOutcome = String(obj.outcome || "ok").toLowerCase();
+  const rawOutcome = String(obj.outcome || "ok").trim().toLowerCase();
   const outcome =
     rawOutcome === "ok" || rawOutcome === "pass" || rawOutcome === "verified"
       ? "ok"
       : rawOutcome === "corrected" || rawOutcome === "adjusted"
         ? "corrected"
         : "error";
-  const currentTier = String(obj.currentTier || obj.tier || "YELLOW").toUpperCase();
-  const serious = Boolean(obj.serious);
-  const sensitive = Boolean(obj.sensitive) || SENSITIVE_PATTERN_RE.test(pattern);
+  const currentTier = String(obj.currentTier || obj.tier || "YELLOW").trim().toUpperCase();
+  const serious = parseBoolFlag(obj.serious) && outcome !== "ok";
+  const sensitive = parseBoolFlag(obj.sensitive) || SENSITIVE_PATTERN_RE.test(pattern);
   return {
     pattern,
     outcome,

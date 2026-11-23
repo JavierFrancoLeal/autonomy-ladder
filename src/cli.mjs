@@ -55,10 +55,10 @@ if (cmd === "grade") {
   const file = args[1];
   const asJson = args.includes("--json");
   const ciMode = args.includes("--ci");
-  if (!file || !fs.existsSync(file)) {
+  if (!file || !fs.existsSync(file) || fs.statSync(file).isDirectory()) {
     const empty = { status: "no_data", message: `Supervision log not found: ${file || "(none)"}` };
     console.log(asJson ? JSON.stringify(empty, null, 2) : empty.message);
-    process.exit(0);
+    process.exit(ciMode ? 1 : 0);
   }
 
   const raw = fs.readFileSync(file, "utf8");
@@ -90,7 +90,7 @@ if (cmd === "grade") {
     }
   }
 
-  if (ciMode && report.hasRegression) {
+  if (ciMode && (report.hasRegression || report.status === "no_data")) {
     process.exit(1);
   }
   process.exit(0);

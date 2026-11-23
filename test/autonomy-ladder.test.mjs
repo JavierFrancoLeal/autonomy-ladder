@@ -139,4 +139,15 @@ test("7. Edge-case regressions: blank/pattern-less events return no_data (never 
   assert.equal(p.grade, "D");
   assert.equal(p.recommendedTier, "RED");
   assert.equal(redD.proposals.length, 0, "Should NOT propose RED -> YELLOW promotion on Grade D");
+
+  // Hardening: serious:true on a passing outcome='ok' event must NOT demote to Grade D, and string 'false' must be false
+  const okWithSerious = gradeEvents(
+    Array.from({ length: 10 }, () => ({ pattern: "critical-check", outcome: "ok ", serious: true, sensitive: "false", currentTier: "YELLOW" })),
+  );
+  assert.equal(okWithSerious.patterns[0].grade, "A");
+  assert.equal(okWithSerious.patterns[0].seriousErrors, 0);
+
+  // Hardening: grade --ci on missing log file must exit 1
+  const missingCi = spawnSync(process.execPath, [CLI, "grade", "/nonexistent/supervision.jsonl", "--ci"], { encoding: "utf8" });
+  assert.equal(missingCi.status, 1);
 });

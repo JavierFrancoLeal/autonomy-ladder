@@ -1,6 +1,6 @@
 {
   "name": "@franco/autonomy-ladder",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Evidence-based Traffic-Light Autonomy Grader (Green/Flag/Yellow/Red) for AI agents: deterministic log parser, A/B/C/D trust scoring, CLI, stdio MCP server, and CI regression gate.",
   "type": "module",
   "main": "./src/core.mjs",
