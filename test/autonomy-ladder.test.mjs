@@ -125,3 +125,18 @@ test("6. Stdio MCP server handles initialize, tools/list, and autonomy_grade_eve
   assert.equal(graded.overallLevel, 5);
   assert.equal(graded.patterns[0].recommendedTier, "GREEN");
 });
+
+test("7. Edge-case regressions: blank/pattern-less events return no_data (never Level 5) and Grade D on RED never promotes to YELLOW", () => {
+  const blankRes = gradeEvents([{ pattern: "   ", outcome: "ok" }, { outcome: "ok" }]);
+  assert.equal(blankRes.status, "no_data");
+  assert.equal(blankRes.overallLevel, null);
+
+  const redD = gradeEvents([
+    { pattern: "legacy-sync", outcome: "error", currentTier: "RED" },
+    { pattern: "legacy-sync", outcome: "error", currentTier: "RED" },
+  ]);
+  const p = redD.patterns[0];
+  assert.equal(p.grade, "D");
+  assert.equal(p.recommendedTier, "RED");
+  assert.equal(redD.proposals.length, 0, "Should NOT propose RED -> YELLOW promotion on Grade D");
+});

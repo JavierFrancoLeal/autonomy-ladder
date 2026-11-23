@@ -135,9 +135,9 @@ export function scorePattern(stats) {
     acceptMode = "PROPOSE";
     action = currentTier === "GREEN" ? "PROPOSE DEMOTE -> YELLOW" : "KEEP YELLOW (NEED MORE SAMPLES)";
   } else {
-    recommendedTier = seriousErrors > 0 || sensitive ? "RED" : "YELLOW";
+    recommendedTier = seriousErrors > 0 || sensitive || currentTier === "RED" ? "RED" : "YELLOW";
     acceptMode = recommendedTier === "RED" ? "OBSERVE" : "PROPOSE";
-    action = `IMMEDIATE DEMOTE -> ${recommendedTier}`;
+    action = currentTier === recommendedTier ? `KEEP ${recommendedTier} (DEMOTED)` : `IMMEDIATE DEMOTE -> ${recommendedTier}`;
   }
 
   return {
@@ -188,6 +188,17 @@ export function gradeEvents(events) {
     if (ev.serious) g.seriousErrors += 1;
     if (ev.sensitive) g.sensitive = true;
     g.currentTier = ev.currentTier;
+  }
+
+  if (grouped.size === 0) {
+    return {
+      status: "no_data",
+      totalEvents: 0,
+      overallLevel: null,
+      patterns: [],
+      proposals: [],
+      hasRegression: false,
+    };
   }
 
   const patterns = [...grouped.values()]
